@@ -7,7 +7,9 @@ import SeasonCard from "@/components/SeasonCard";
 import TeamCard from "@/components/TeamCard";
 import MediaCard from "@/components/MediaCard";
 import heroBg from "@/assets/hero-bg.jpg";
-import basketballIcon from "@/assets/basketball-icon.png";
+import leagueLogo from "@/assets/league-logo.jpg";
+import seasonLogo from "@/assets/season-logo.jpg";
+import BasketballGame from "@/components/BasketballGame";
 
 const Index = () => {
   return (
@@ -26,25 +28,13 @@ const Index = () => {
         
         <div className="container mx-auto px-4 relative z-10 py-20">
           <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
-            {/* Season Badge */}
-            <div className="flex justify-center mb-6">
+            {/* Season Logo */}
+            <div className="flex justify-center mb-8">
               <img 
-                src={basketballIcon} 
-                alt="Media Basket" 
-                className="w-24 h-24 animate-wave"
+                src={seasonLogo} 
+                alt="2K25 Осень Сезон 6" 
+                className="w-full max-w-md animate-fade-in"
               />
-            </div>
-            
-            {/* Main Title */}
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight">
-              <span className="text-foreground">2K</span>
-              <span className="text-primary">25</span>
-            </h1>
-            
-            <div className="flex items-center justify-center gap-4 text-2xl md:text-3xl font-bold text-muted-foreground">
-              <span>Осень</span>
-              <span className="text-primary">•</span>
-              <span>6 сезон</span>
             </div>
             
             <p className="text-xl md:text-2xl text-foreground max-w-2xl mx-auto leading-relaxed">
@@ -90,8 +80,28 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Game & Tasks Section */}
+      <section id="game" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-black text-foreground">
+              Игра и задания
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Зарабатывай очки и выполняй миссии
+            </p>
+          </div>
+          
+          <div className="max-w-6xl mx-auto">
+            <BasketballGame />
+          </div>
+        </div>
+      </section>
+
+      <Separator className="bg-border" />
+
       {/* About Section */}
-      <section id="about" className="py-20 bg-background">
+      <section id="about" className="py-20 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black text-foreground">
@@ -110,13 +120,13 @@ const Index = () => {
             />
             <FeatureCard
               icon={Trophy}
-              title="Задания и награды"
-              description="Выполняй миссии, зарабатывай очки и получай уникальные призы"
+              title="Профили и рейтинг"
+              description="Создай свой профиль, следи за статистикой и соревнуйся с другими"
             />
             <FeatureCard
               icon={User}
-              title="Профили и рейтинг"
-              description="Создай свой профиль, следи за статистикой и соревнуйся с другими"
+              title="Команды и турниры"
+              description="Следи за любимыми командами и расписанием игр"
             />
           </div>
         </div>
@@ -125,7 +135,7 @@ const Index = () => {
       <Separator className="bg-border" />
 
       {/* Gallery Section */}
-      <section id="gallery" className="py-20 bg-secondary/30">
+      <section id="gallery" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black text-foreground">
@@ -150,7 +160,7 @@ const Index = () => {
       <Separator className="bg-border" />
 
       {/* Seasons Section */}
-      <section id="seasons" className="py-20 bg-background">
+      <section id="seasons" className="py-20 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black text-foreground">
@@ -182,7 +192,7 @@ const Index = () => {
       <Separator className="bg-border" />
 
       {/* Teams Section */}
-      <section id="teams" className="py-20 bg-secondary/30">
+      <section id="teams" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black text-foreground">
@@ -207,7 +217,7 @@ const Index = () => {
       <Separator className="bg-border" />
 
       {/* Media Section */}
-      <section id="media" className="py-20 bg-background">
+      <section id="media" className="py-20 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black text-foreground">
@@ -289,7 +299,15 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-secondary py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-4">
+              <img 
+                src={leagueLogo} 
+                alt="Лига Ставок Media Basket" 
+                className="h-16 w-auto"
+              />
+            </div>
+            
             <div className="flex items-center gap-6">
               <Button 
                 variant="ghost" 
