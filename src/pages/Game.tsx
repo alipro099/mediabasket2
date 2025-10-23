@@ -8,9 +8,9 @@ const Game = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-card border-b border-border">
+      <header className="absolute top-0 left-0 right-0 z-20 bg-card/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={leagueLogo} alt="Лига" className="h-10 w-10 rounded-lg" />
@@ -31,10 +31,8 @@ const Game = () => {
         </div>
       </header>
 
-      {/* Game Content */}
-      <div className="max-w-md mx-auto px-4 py-6">
-        <Basketball3DGame />
-      </div>
+      {/* Game Content - Full Screen */}
+      <Basketball3DGame />
     </div>
   );
 };

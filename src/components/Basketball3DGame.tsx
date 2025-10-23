@@ -1,7 +1,7 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import { Sphere, Cylinder, Box, useTexture } from "@react-three/drei";
-import { Mesh, Vector3 } from "three";
+import { Group, Vector3 } from "three";
 import { useToast } from "@/hooks/use-toast";
 import leagueLogo from "@/assets/league-logo.jpg";
 
@@ -10,29 +10,28 @@ interface BallProps {
 }
 
 function Ball({ onShoot }: BallProps) {
-  const meshRef = useRef<Mesh>(null);
+  const ballRef = useRef<Group>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [velocity, setVelocity] = useState<Vector3 | null>(null);
   const [isFlying, setIsFlying] = useState(false);
-  const { camera } = useThree();
 
   useFrame(() => {
-    if (meshRef.current && velocity && isFlying) {
-      meshRef.current.position.add(velocity);
+    if (ballRef.current && velocity && isFlying) {
+      ballRef.current.position.add(velocity);
       velocity.y -= 0.02; // gravity
       
       // Check if ball reached hoop height and distance
       const distanceToHoop = Math.sqrt(
-        Math.pow(meshRef.current.position.x, 2) + 
-        Math.pow(meshRef.current.position.z - 5, 2)
+        Math.pow(ballRef.current.position.x, 2) + 
+        Math.pow(ballRef.current.position.z - 5, 2)
       );
       
-      if (meshRef.current.position.y > 3 && meshRef.current.position.y < 4 && distanceToHoop < 0.8) {
+      if (ballRef.current.position.y > 3 && ballRef.current.position.y < 4 && distanceToHoop < 0.8) {
         // Success!
         onShoot(true);
         resetBall();
-      } else if (meshRef.current.position.y < -2) {
+      } else if (ballRef.current.position.y < -2) {
         // Missed
         onShoot(false);
         resetBall();
@@ -43,8 +42,8 @@ function Ball({ onShoot }: BallProps) {
   const resetBall = () => {
     setIsFlying(false);
     setVelocity(null);
-    if (meshRef.current) {
-      meshRef.current.position.set(0, -1, 0);
+    if (ballRef.current) {
+      ballRef.current.position.set(0, -1, 0);
     }
   };
 
@@ -73,15 +72,28 @@ function Ball({ onShoot }: BallProps) {
   };
 
   return (
-    <Sphere
-      ref={meshRef}
-      args={[0.3, 32, 32]}
-      position={[0, -1, 0]}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-    >
-      <meshStandardMaterial color="#ff6b35" roughness={0.5} metalness={0.2} />
-    </Sphere>
+    <group ref={ballRef} position={[0, -1, 0]}>
+      <Sphere
+        args={[0.3, 32, 32]}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+      >
+        <meshStandardMaterial 
+          color="hsl(145, 100%, 35%)" 
+          roughness={0.6} 
+          metalness={0.1}
+        />
+      </Sphere>
+      {/* Basketball lines */}
+      <mesh rotation={[0, 0, 0]}>
+        <torusGeometry args={[0.3, 0.015, 8, 32, Math.PI]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
+      </mesh>
+      <mesh rotation={[0, Math.PI / 2, 0]}>
+        <torusGeometry args={[0.3, 0.015, 8, 32, Math.PI]} />
+        <meshStandardMaterial color="#1a1a1a" roughness={0.4} />
+      </mesh>
+    </group>
   );
 }
 
@@ -90,24 +102,29 @@ function Hoop() {
   
   return (
     <group position={[0, 3.5, 5]}>
-      {/* Backboard with logo */}
-      <Box args={[2, 1.5, 0.1]} position={[0, 0, 0]}>
-        <meshStandardMaterial map={texture} />
+      {/* Backboard with red border */}
+      <Box args={[2.2, 1.7, 0.05]} position={[0, 0, 0]}>
+        <meshStandardMaterial color="#ff0000" />
+      </Box>
+      
+      {/* Inner white backboard with logo */}
+      <Box args={[1.9, 1.4, 0.06]} position={[0, 0, 0.06]}>
+        <meshStandardMaterial map={texture} color="#ffffff" />
+      </Box>
+      
+      {/* Rim attachment */}
+      <Box args={[0.3, 0.2, 0.1]} position={[0, -0.7, 0.15]}>
+        <meshStandardMaterial color="#ff0000" />
       </Box>
       
       {/* Rim */}
-      <Cylinder args={[0.75, 0.75, 0.05, 32]} position={[0, -0.5, 0.4]} rotation={[0, 0, 0]}>
-        <meshStandardMaterial color="#ff6b35" metalness={0.8} roughness={0.2} />
+      <Cylinder args={[0.75, 0.75, 0.05, 32]} position={[0, -0.9, 0.4]} rotation={[0, 0, 0]}>
+        <meshStandardMaterial color="#ff0000" metalness={0.8} roughness={0.2} />
       </Cylinder>
       
       {/* Net */}
-      <Cylinder args={[0.7, 0.5, 0.8, 16, 1, true]} position={[0, -0.9, 0.4]}>
+      <Cylinder args={[0.7, 0.5, 0.8, 16, 1, true]} position={[0, -1.3, 0.4]}>
         <meshStandardMaterial color="#ffffff" wireframe opacity={0.5} transparent />
-      </Cylinder>
-      
-      {/* Pole */}
-      <Cylinder args={[0.1, 0.1, 3.5, 16]} position={[0, -1.75, -0.5]}>
-        <meshStandardMaterial color="#333333" metalness={0.6} roughness={0.4} />
       </Cylinder>
     </group>
   );
@@ -150,17 +167,17 @@ const Basketball3DGame = () => {
   };
 
   return (
-    <div className="relative w-full h-[500px] bg-gradient-to-b from-background to-card rounded-lg overflow-hidden border border-border">
+    <div className="relative w-full h-screen bg-gradient-to-b from-background to-card overflow-hidden">
       {/* Score display */}
-      <div className="absolute top-4 left-4 z-10 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-border">
+      <div className="absolute top-20 left-4 z-10 bg-card/70 backdrop-blur-sm px-4 py-2 rounded-lg border border-border">
         <p className="text-sm text-muted-foreground">Очки</p>
         <p className="text-3xl font-bold text-primary">{score}</p>
       </div>
 
       {/* Instructions */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-card/90 backdrop-blur-sm px-4 py-2 rounded-lg border border-border">
-        <p className="text-xs text-center text-muted-foreground">
-          Свайпай мяч вверх для броска
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-10 bg-card/70 backdrop-blur-sm px-6 py-3 rounded-lg border border-border">
+        <p className="text-sm text-center text-foreground font-medium">
+          Свайпай мяч вверх для броска 🏀
         </p>
       </div>
 
