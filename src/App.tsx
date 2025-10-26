@@ -18,7 +18,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename="/mediabasket2/">
         <div className="max-w-md mx-auto relative">
           <Routes>
             <Route path="/" element={<Home />} />
